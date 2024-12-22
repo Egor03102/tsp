@@ -1,0 +1,10 @@
+
+ALPHA = 3# alpha
+
+BETA = 4# beta
+
+ITERATIONS = 5
+
+EVAPORATION = 0.7
+
+ANTS_FACTOR = 0.5
