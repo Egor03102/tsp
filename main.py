@@ -126,6 +126,7 @@ graph = NewGraph()
 
 
 def main(page: ft.Page):
+    page.title = 'Solver TSP'
     def pan_start(e: ft.DragStartEvent): # нажатие на canvas
         graph.count += 1
         graph.nodes += f"{graph.count},{int(e.local_x)},{int(page.height - int(e.local_y))},"
@@ -151,6 +152,7 @@ def main(page: ft.Page):
             graph.count = 0
         main.controls[2].visible = False
         main.controls[3].visible = True
+        main.controls[4].visible = False
         page.update()
 
     def clear_canvas(e): # очистка canvas, кнопка Очистить
@@ -231,12 +233,17 @@ def main(page: ft.Page):
         if e.control.selected_index == 0:
             main.controls[2].visible = True
             main.controls[3].visible = False
+            main.controls[4].visible = False
             if preview in view.controls:
                 view.controls[0].visible = True
                 view.controls[1].visible = True
                 view.controls[2].visible = False
             names = [x.split('.')[0] for x in os.listdir('graphs/images')]
             generateListView(names)
+        elif e.control.selected_index == 1:
+            main.controls[2].visible = False
+            main.controls[3].visible = False
+            main.controls[4].visible = True
         page.update()
 
     # функции preview
@@ -319,7 +326,8 @@ def main(page: ft.Page):
     rail = ft.NavigationRail(min_width=100,
                              min_extended_width=400,
                              leading=ft.FloatingActionButton(text='Новая задача',icon=ft.icons.ADD, on_click=new_tsp),
-                             destinations=[ft.NavigationRailDestination(label_content=ft.Text('Меню',size=16, weight='bold'))],
+                             destinations=[ft.NavigationRailDestination(label_content=ft.Text('Меню',size=16, weight='bold'), icon=ft.Image(src='assets/menu.png', width=30, height=30)),
+                                           ft.NavigationRailDestination(label_content=ft.Text('О программе',size=16, weight='bold'), icon=ft.Image(src='assets/info.png', width=30, height=30))],
                              on_change=rail_change)
 
     btn_style = ft.ButtonStyle(bgcolor='blue', color='white', padding=ft.padding.all(18))
@@ -355,9 +363,26 @@ def main(page: ft.Page):
     preview = ft.Column([preview_line], visible=False,
                                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                                         expand=True)
+    about = ft.Column([ft.Text('О программе',weight='bold', size=21), ft.Text('Новая задача', size=20, weight='bold'),
+                       ft.Text(
+'После нажатия на кнопку Новая задача, появится поле, которое содержит следующие элементы:\n\n'
+' ‧ Кнопка Очистить, которая очищает пространство от точек\n'
+' ‧ Поле для ввода названия новой задачи.\n\n'
+'На кнопку Далее можно нажать если вы ввели название и создали как минимум 4 точки.\n'
+'Чтобы создать точку нужно просто нажать на пустое пространство, кроме левой панели.\n'
+'После нажатия кнопки Далее.\nВведите максимальное число для генерации случайного в поле и обязательно нажать клавишу Enter. \n' 
+'После этого нажмите на кнопку Готово и перед вами появится изображение итогового графа. \n'
+'На этом создание графа закончилось и можно переходить в любое меню.\n',size=18),
+ft.Text(
+'Вкладка Меню', size=20, weight='bold'), 
+ft.Text('Меню содержит два элемента\n'
+'   1. поле для поиска\n'
+'   2. Список ранее созданных задач\n'
+'Чтобы найти задачу, начните вводить начальные буквы имени задачи.', size=18), ft.Text('Автор: Егор Пустобаев', text_align=ft.TextAlign.END)], visible=False) 
+
     view = ft.Column([search, tsps, preview], expand=True)
 
-    main = ft.Row([rail, preview, view, creating],expand=True)
+    main = ft.Row([rail, preview, view, creating, about],expand=True)
 
 
     page.add(main)
