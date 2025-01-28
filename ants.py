@@ -53,7 +53,7 @@ class Colony:
                 self.best_path = ant.path
 
     def get_best_ant(self):
-        return self.best_distance, self.best_path
+        return self.best_path
         
         
 class Ant:

@@ -7,6 +7,8 @@ from cnf import ITERATIONS
 
 from graph_handle import image_solved_graph
 
+import sqlite3 as sql
+
 class Graph:
     def __init__(self, name):
         self.name = name
@@ -18,9 +20,11 @@ class Graph:
 
     
     def generate_array_roads(self):
-        with open(f'graphs/roads/{self.name}.txt', 'r') as data:
-            roads_string = data.read()
-        roads_list  = list(batched([int(i) for i in roads_string.split(',') if i != ''], 3))
+        bd = sql.connect('solver.db')
+        cr = bd.cursor()
+        roads_list = cr.execute('SELECT one, two, dist FROM roads WHERE name=?', (self.name,)).fetchall()
+        bd.close()
+
         self.count = roads_list[-1][1]
         roads_array = numpy.zeros((self.count, self.count), dtype=int)
         for x, y , weight in roads_list:
@@ -37,14 +41,6 @@ class Graph:
             colony.move_colony(self.cities, self.roads)
         return colony.get_best_ant() # distance and path in tuple
 
-    
-
-#graph = Graph('52')
-
-#distance, path = graph.solve_aco()
-#print(distance)
-#path = [str(i + 1) for i in path]
-#image_solved_graph('52', path)
 
 
 
